@@ -1,0 +1,319 @@
+openapi: 3.0.3
+info:
+  title: LTI ATS - Candidates API
+  version: "1.0.0"
+  description: |
+    API for creating and searching candidates. Supports multipart/form-data uploads (CV PDF/DOC/DOCX)
+servers:
+  - url: http://localhost:3010
+    description: Local development
+
+paths:
+  /api/candidates:
+    post:
+      summary: Create a candidate (fields + optional CV upload)
+      description: >
+        Accepts multipart/form-data (preferred) or application/json (without file).
+        Validates required fields and file constraints. Returns 201 on success.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: Alice
+                lastName:
+                  type: string
+                  example: Smith
+                email:
+                  type: string
+                  format: email
+                  example: alice@example.com
+                phone:
+                  type: string
+                  example: "+1 555-123-4567"
+                address:
+                  type: string
+                  example: "123 Main St, City, Country"
+                education:
+                  description: JSON or text describing education (stringified JSON allowed)
+                  oneOf:
+                    - type: object
+                    - type: string
+                workExperience:
+                  description: JSON or text describing experience (stringified JSON allowed)
+                  oneOf:
+                    - type: object
+                    - type: string
+                cv:
+                  type: string
+                  format: binary
+              required:
+                - firstName
+                - lastName
+                - email
+            encoding:
+              cv:
+                contentType: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            examples:
+              multipart-example:
+                summary: Example multipart request (curl)
+                value:
+                  # This is a hint/example; binary file upload shown as @resume.pdf in curl sample below.
+                  firstName: Alice
+                  lastName: Smith
+                  email: alice@example.com
+                  phone: "+1 555-123-4567"
+                  address: "123 Main St"
+                  education: '[{"degree":"BSc Computer Science","year":2018}]'
+                  workExperience: '[{"company":"Acme","role":"Engineer","years":2}]'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateCreateInput'
+            examples:
+              json-example:
+                value:
+                  firstName: Alice
+                  lastName: Smith
+                  email: alice@example.com
+                  phone: "+1 555-123-4567"
+                summary: Use this when no file is included
+      responses:
+        '201':
+          description: Candidate created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResponse'
+              examples:
+                success:
+                  value:
+                    message: "Candidate created"
+                    data:
+                      id: "uuid-1234"
+                      firstName: "Alice"
+                      lastName: "Smith"
+                      email: "alice@example.com"
+                      cvFileName: "resume.pdf"
+                      cvMimeType: "application/pdf"
+                      cvPath: "uploads/uuid-1234.pdf"
+                      createdAt: "2025-11-18T20:00:00.000Z"
+                      updatedAt: "2025-11-18T20:00:00.000Z"
+        '400':
+          description: Validation or upload error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing-fields:
+                  value:
+                    error: "firstName, lastName and email are required"
+                invalid-email:
+                  value:
+                    error: "Invalid email format"
+                invalid-file:
+                  value:
+                    error: "Invalid file type. Only PDF/DOC/DOCX allowed."
+        '409':
+          description: Duplicate (email already exists)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                duplicate:
+                  value:
+                    error: "Candidate with that email already exists"
+        '413':
+          description: Payload too large (file exceeds configured max)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                too-large:
+                  value:
+                    error: "Uploaded file too large"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server-error:
+                  value:
+                    error: "Internal server error"
+
+  /api/candidates/autocomplete:
+    get:
+      summary: Autocomplete candidates by name/email
+      description: Returns up to 10 candidate matches for use in autocomplete widgets.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: Search term (firstName, lastName or email)
+      responses:
+        '200':
+          description: List of candidate summaries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CandidateSummary'
+              examples:
+                hits:
+                  value:
+                    - id: "uuid-1234"
+                      firstName: "Alice"
+                      lastName: "Smith"
+                      email: "alice@example.com"
+                    - id: "uuid-5678"
+                      firstName: "Alicia"
+                      lastName: "Jones"
+                      email: "alicia@example.com"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server-error:
+                  value:
+                    error: "Internal server error"
+
+components:
+  schemas:
+    CandidateCreateInput:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: string
+        education:
+          oneOf:
+            - type: object
+            - type: string
+        workExperience:
+          oneOf:
+            - type: object
+            - type: string
+      required:
+        - firstName
+        - lastName
+        - email
+
+    Candidate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        education:
+          oneOf:
+            - type: object
+            - type: string
+          nullable: true
+        workExperience:
+          oneOf:
+            - type: object
+            - type: string
+          nullable: true
+        cvFileName:
+          type: string
+          nullable: true
+        cvMimeType:
+          type: string
+          nullable: true
+        cvPath:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CandidateSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+
+    CreatedResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Candidate'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+
+x-code-samples:
+  - lang: cURL (multipart)
+    source: |
+      curl -X POST "http://localhost:3010/api/candidates" \
+        -H "accept: application/json" \
+        -H "Content-Type: multipart/form-data" \
+        -F "firstName=Alice" \
+        -F "lastName=Smith" \
+        -F "email=alice@example.com" \
+        -F "phone=+1 555-123-4567" \
+        -F "address=123 Main St" \
+        -F "education=[{\"degree\":\"BSc\",\"year\":2018}]" \
+        -F "workExperience=[{\"company\":\"Acme\",\"role\":\"Engineer\"}]" \
+        -F "cv=@./resume.pdf;type=application/pdf"
+
+  - lang: cURL (JSON)
+    source: |
+      curl -X POST "http://localhost:3010/api/candidates" \
+        -H "Content-Type: application/json" \
+        -d '{"firstName":"Alice","lastName":"Smith","email":"alice@example.com"}'

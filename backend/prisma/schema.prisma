@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin", "darwin-arm64"]
 }
 
 datasource db {
@@ -17,4 +18,20 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+}
+
+model Candidate {
+  id             String   @id @default(uuid())
+  firstName      String
+  lastName       String
+  email          String   @unique
+  phone          String?
+  address        String?
+  education      Json?
+  workExperience Json?
+  cvFileName     String?
+  cvMimeType     String?
+  cvPath         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

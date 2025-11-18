@@ -27,3 +27,6 @@ yarn-error.log*
 
 # .env
 
+# Ignore uploads
+/backend/uploads
+
