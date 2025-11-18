@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../index';
+import prisma from '../app';
 import path from 'path';
 import fs from 'fs';
 

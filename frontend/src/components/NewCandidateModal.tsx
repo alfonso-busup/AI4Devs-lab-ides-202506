@@ -33,6 +33,9 @@ export default function NewCandidateModal({ isOpen, onClose, onSuccess }: Props)
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   }
 
+  // API base (configurable)
+  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:3010';
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
@@ -59,7 +62,7 @@ export default function NewCandidateModal({ isOpen, onClose, onSuccess }: Props)
 
     try {
       setLoading(true);
-      const res = await fetch('/api/candidates', {
+      const res = await fetch(`${API_BASE}/api/candidates`, {
         method: 'POST',
         body: form,
       });

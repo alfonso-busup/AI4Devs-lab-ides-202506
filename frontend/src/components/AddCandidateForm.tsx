@@ -69,6 +69,9 @@ export default function AddCandidateForm({ onSuccess, onCancel }: { onSuccess?: 
     firstNameRef.current?.focus();
   }, []);
 
+  // API base (configurable)
+  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:3010';
+
   // Helper: upload with XHR to get progress callbacks
   function uploadWithProgress(url: string, formData: FormData, onProgress: (percent: number) => void) {
     return new Promise<{ status: number; body: any }>((resolve, reject) => {
@@ -116,7 +119,7 @@ export default function AddCandidateForm({ onSuccess, onCancel }: { onSuccess?: 
     if (data.cv) form.append('cv', data.cv as Blob);
 
     try {
-      const { status, body } = await uploadWithProgress('/api/candidates', form, (p) => {
+      const { status, body } = await uploadWithProgress(`${API_BASE}/api/candidates`, form, (p) => {
         setUploadProgress(p);
       });
 
