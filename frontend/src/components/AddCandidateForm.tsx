@@ -146,98 +146,211 @@ export default function AddCandidateForm({ onSuccess, onCancel }: { onSuccess?: 
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 720 }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 220px' }}>
-            <label htmlFor="firstName">First name*</label>
-            <input id="firstName" {...register('firstName')} ref={(e) => { register('firstName').ref(e); firstNameRef.current = e; }} aria-describedby={errors.firstName ? 'err-firstName' : undefined} style={{ width: '100%', padding: 8 }} />
-            {errors.firstName && <div id="err-firstName" role="alert" style={{ color: 'crimson', fontSize: 13 }}>{errors.firstName.message}</div>}
+    <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%', maxWidth: 760, margin: '0 auto' }}>
+      <div
+        style={{
+          background: '#ffffff',
+          padding: 24,
+          borderRadius: 12,
+          boxShadow: '0 12px 30px rgba(15,23,42,0.06)',
+          border: '1px solid rgba(15,23,42,0.04)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 18,
+        }}
+      >
+        {/* Row: First + Last */}
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 280px' }}>
+            <label htmlFor="firstName" style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#0f172a' }}>
+              First name*
+            </label>
+            <input
+              id="firstName"
+              {...register('firstName')}
+              ref={(e) => { register('firstName').ref(e); firstNameRef.current = e; }}
+              aria-describedby={errors.firstName ? 'err-firstName' : undefined}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                borderRadius: 10,
+                border: '1px solid rgba(15,23,42,0.08)',
+                background: '#fbfdff',
+                fontSize: 15,
+                boxSizing: 'border-box',
+              }}
+            />
+            {errors.firstName && <div id="err-firstName" role="alert" style={{ color: '#dc2626', fontSize: 13, marginTop: 8 }}>{errors.firstName.message}</div>}
           </div>
 
-          <div style={{ flex: '1 1 220px' }}>
-            <label htmlFor="lastName">Last name*</label>
-            <input id="lastName" {...register('lastName')} aria-describedby={errors.lastName ? 'err-lastName' : undefined} style={{ width: '100%', padding: 8 }} />
-            {errors.lastName && <div id="err-lastName" role="alert" style={{ color: 'crimson', fontSize: 13 }}>{errors.lastName.message}</div>}
+          <div style={{ flex: '1 1 280px' }}>
+            <label htmlFor="lastName" style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#0f172a' }}>
+              Last name*
+            </label>
+            <input
+              id="lastName"
+              {...register('lastName')}
+              aria-describedby={errors.lastName ? 'err-lastName' : undefined}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                borderRadius: 10,
+                border: '1px solid rgba(15,23,42,0.08)',
+                background: '#fbfdff',
+                fontSize: 15,
+                boxSizing: 'border-box',
+              }}
+            />
+            {errors.lastName && <div id="err-lastName" role="alert" style={{ color: '#dc2626', fontSize: 13, marginTop: 8 }}>{errors.lastName.message}</div>}
           </div>
         </div>
 
+        {/* Email */}
         <div>
-          <label htmlFor="email">Email*</label>
-          <input id="email" type="email" {...register('email')} aria-describedby={errors.email ? 'err-email' : undefined} style={{ width: '100%', padding: 8 }} />
-          {errors.email && <div id="err-email" role="alert" style={{ color: 'crimson', fontSize: 13 }}>{errors.email.message}</div>}
+          <label htmlFor="email" style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#0f172a' }}>Email*</label>
+          <input
+            id="email"
+            type="email"
+            {...register('email')}
+            aria-describedby={errors.email ? 'err-email' : undefined}
+            style={{
+              width: '100%',
+              padding: '12px 14px',
+              borderRadius: 10,
+              border: '1px solid rgba(15,23,42,0.08)',
+              background: '#fbfdff',
+              fontSize: 15,
+              boxSizing: 'border-box',
+            }}
+          />
+          {errors.email && <div id="err-email" role="alert" style={{ color: '#dc2626', fontSize: 13, marginTop: 8 }}>{errors.email.message}</div>}
         </div>
 
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 220px' }}>
-            <label htmlFor="phone">Phone</label>
-            <input id="phone" {...register('phone')} aria-describedby={errors.phone ? 'err-phone' : undefined} style={{ width: '100%', padding: 8 }} />
-            {errors.phone && <div id="err-phone" role="alert" style={{ color: 'crimson', fontSize: 13 }}>{errors.phone.message}</div>}
+        {/* Phone + Address */}
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 280px' }}>
+            <label htmlFor="phone" style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#0f172a' }}>Phone</label>
+            <input
+              id="phone"
+              {...register('phone')}
+              aria-describedby={errors.phone ? 'err-phone' : undefined}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                borderRadius: 10,
+                border: '1px solid rgba(15,23,42,0.08)',
+                background: '#fbfdff',
+                fontSize: 15,
+                boxSizing: 'border-box',
+              }}
+            />
+            {errors.phone && <div id="err-phone" role="alert" style={{ color: '#dc2626', fontSize: 13, marginTop: 8 }}>{errors.phone.message}</div>}
           </div>
 
-          <div style={{ flex: '1 1 220px' }}>
-            <label htmlFor="address">Address</label>
-            <textarea id="address" {...register('address')} style={{ width: '100%', padding: 8, minHeight: 56 }} />
+          <div style={{ flex: '1 1 420px' }}>
+            <label htmlFor="address" style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#0f172a' }}>Address</label>
+            <textarea
+              id="address"
+              {...register('address')}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                borderRadius: 10,
+                border: '1px solid rgba(15,23,42,0.08)',
+                background: '#fbfdff',
+                fontSize: 15,
+                minHeight: 56,
+                boxSizing: 'border-box',
+              }}
+            />
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 320px' }}>
-            <label htmlFor="education">Education</label>
-            <textarea id="education" {...register('education')} style={{ width: '100%', padding: 8, minHeight: 80 }} placeholder='Free text or JSON array, e.g. [{"degree":"BSc","year":2018}]' />
+        {/* Education + Work */}
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 340px' }}>
+            <label htmlFor="education" style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#0f172a' }}>Education</label>
+            <textarea id="education" {...register('education')} placeholder='Free text or JSON array, e.g. [{"degree":"BSc","year":2018}]' style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1px solid rgba(15,23,42,0.08)', background: '#fbfdff', minHeight: 88, boxSizing: 'border-box', fontSize: 15 }} />
           </div>
 
-          <div style={{ flex: '1 1 320px' }}>
-            <label htmlFor="workExperience">Work experience</label>
-            <textarea id="workExperience" {...register('workExperience')} style={{ width: '100%', padding: 8, minHeight: 80 }} placeholder='Free text or JSON array' />
+          <div style={{ flex: '1 1 340px' }}>
+            <label htmlFor="workExperience" style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#0f172a' }}>Work experience</label>
+            <textarea id="workExperience" {...register('workExperience')} placeholder='Free text or JSON array' style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1px solid rgba(15,23,42,0.08)', background: '#fbfdff', minHeight: 88, boxSizing: 'border-box', fontSize: 15 }} />
           </div>
         </div>
 
+        {/* File input */}
         <div>
           <Controller
             control={control}
             name="cv"
             render={({ field }) => {
-             const file = (field.value as unknown) as File | null;
-             return (
-               <FileInput
-                 id="cv"
-                 name="cv"
-                 file={file ?? null}
-                 onChange={(f) => field.onChange(f)}
-                 maxSizeMB={MAX_FILE_MB}
-               />
-             );
-           }}
+              const file = (field.value as unknown) as File | null;
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 13, color: '#0f172a' }}>CV (pdf/doc/docx)</label>
+                  <FileInput id="cv" name="cv" file={file ?? null} onChange={(f) => field.onChange(f)} maxSizeMB={MAX_FILE_MB} />
+                </div>
+              );
+            }}
           />
-          {errors.cv && <div role="alert" style={{ color: 'crimson', fontSize: 13 }}>{errors.cv.message}</div>}
+          {errors.cv && <div role="alert" style={{ color: '#dc2626', fontSize: 13, marginTop: 8 }}>{errors.cv.message}</div>}
         </div>
 
         {/* upload progress bar */}
         {uploadProgress !== null && (
           <div aria-live="polite" style={{ marginTop: 6 }}>
-            <div style={{ height: 8, background: '#eee', borderRadius: 4, overflow: 'hidden' }}>
-              <div style={{ width: `${uploadProgress}%`, height: '100%', background: '#0b69ff' }} />
+            <div style={{ height: 10, background: '#f1f5f9', borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{ width: `${uploadProgress}%`, height: '100%', background: 'linear-gradient(90deg,#0b69ff,#60a5fa)', borderRadius: 999 }} />
             </div>
-            <div style={{ fontSize: 13, marginTop: 4 }}>{uploadProgress}%</div>
+            <div style={{ fontSize: 13, marginTop: 8, color: '#374151' }}>{uploadProgress}%</div>
           </div>
         )}
 
         {/* server messages */}
         {serverError && (
-          <div role="alert" style={{ color: 'crimson', fontSize: 14 }}>
+          <div role="alert" style={{ color: '#dc2626', fontSize: 14 }}>
             {serverError}
           </div>
         )}
         {successMessage && (
-          <div role="status" style={{ color: 'green', fontSize: 14 }}>
+          <div role="status" style={{ color: '#16a34a', fontSize: 14 }}>
             {successMessage}
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-          <button type="button" onClick={onCancel} disabled={isSubmitting || uploadProgress !== null} style={{ padding: '8px 12px' }}>Cancel</button>
-          <button type="submit" disabled={!isValid || isSubmitting || uploadProgress !== null} style={{ padding: '8px 12px' }}>{isSubmitting ? 'Saving...' : 'Save Candidate'}</button>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 6 }}>
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isSubmitting || uploadProgress !== null}
+            style={{
+              padding: '10px 14px',
+              borderRadius: 10,
+              border: '1px solid rgba(15,23,42,0.06)',
+              background: '#ffffff',
+              color: '#374151',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!isValid || isSubmitting || uploadProgress !== null}
+            style={{
+              padding: '10px 16px',
+              borderRadius: 10,
+              border: 'none',
+              background: !isValid || isSubmitting || uploadProgress !== null ? 'rgba(11,105,255,0.45)' : 'linear-gradient(90deg,#0b69ff,#2563eb)',
+              color: '#fff',
+              cursor: !isValid || isSubmitting || uploadProgress !== null ? 'not-allowed' : 'pointer',
+              fontWeight: 700,
+            }}
+          >
+            {isSubmitting ? 'Saving...' : 'Save Candidate'}
+          </button>
         </div>
       </div>
     </form>
